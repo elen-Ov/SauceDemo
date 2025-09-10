@@ -40,7 +40,7 @@ public class Tests
         driver.FindElement(By.XPath("//span[@class='active_option' and @data-test='active-option']"));
         // seach by CSS - to be done
         // for check
-        Thread.Sleep(2000);
+        //Thread.Sleep(2000);
         driver.Quit();
     }
 }
