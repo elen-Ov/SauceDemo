@@ -33,7 +33,7 @@ public class Tests
         driver.FindElement(By.XPath("//div[text()='Swag Labs']"));
         driver.FindElement(By.XPath("//a[contains(@data-test,'shopping-cart-link')]"));
         driver.FindElement(By.XPath("//div[contains(text(),'carry.allTheThings')]"));
-        driver.FindElement(By.XPath("//*[text()='29.99']//ancestor::div"));
+        driver.FindElement(By.XPath("//*[text()='29.99']/ancestor::div[@class='inventory_item']"));
         driver.FindElement(By.XPath("//div[@id='menu_button_container']/descendant::button[@id='react-burger-cross-btn']"));
         driver.FindElement(By.XPath("//ul[@class='social']/following::div[@class='footer_copy']"));
         driver.FindElement(By.XPath("//div[@class='footer_copy']/parent::footer[@data-test='footer']"));
