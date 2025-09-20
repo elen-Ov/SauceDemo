@@ -1,9 +1,9 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-namespace SauceDemo;
+namespace SauceDemo.Tests;
 
-public class Tests
+public class LocatorsListTest
 {
     [SetUp]
     public void Setup()
