@@ -5,30 +5,32 @@ namespace SauceDemo.Services;
 
 public class DriverManager
 {
-    private static IWebDriver driver;
+    private static IWebDriver? _driver;
 
     public static IWebDriver Driver
     {
         get
         {
-            if (driver == null)
+            if (_driver == null)
             {
-                driver = Init();
+                _driver = Init();
             }
-            return driver;
+            return _driver;
         }
     }
 
     private static IWebDriver Init()
     {
-        var options = new ChromeOptions();
-        options.AddArgument("--start-maximized");
-        return new ChromeDriver(options);
+        IWebDriver driver = new ChromeDriver();
+        driver.Manage().Window.Maximize();
+        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+        return driver;
     }
 
-    public static void Quit()
+    public static void CloseBrowser()
     {
-        driver?.Quit();
-        driver = null;
+        _driver?.Quit();
+        _driver?.Dispose(); // IWebDriver и его реализации, как например ChromeDriver реализуют IDisposable
+        _driver = null;
     } 
 }
