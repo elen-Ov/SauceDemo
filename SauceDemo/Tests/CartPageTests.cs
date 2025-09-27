@@ -12,20 +12,27 @@ public class CartPageTests : BaseTest
     public void Setup() {}
 
     [Test]
-    public void CartPage_ProductAddedToCartCheckByProductNameTest()
+    public void CartPage_ProductsAddedToCartCheckByProductNamesTest()
     {
         // Arrange
-        var expectedProductName = "Sauce Labs Backpack";
+        var expectedProductNames = new List<string>
+        {
+            "Sauce Labs Backpack",
+            "Sauce Labs Fleece Jacket"
+        };
         _loginPage.OpenLoginPage();
         _loginPage.LoginWithStandardUser();
         // Act
-        _productListPage.ChooseDefiniteProduct(1);
-        _productListPage.AddProductToCart();
+        foreach (var product in expectedProductNames)
+        {
+            _productListPage.ChooseDefiniteProductByName(product);
+            _productListPage.ClickAddToCartButton(product);
+        }
         _productListPage.GoToCart();
-        var actualProductName = _cartPage.GetProductInCartName();
+        var actualProductNames = _cartPage.GetAllProductNamesInCart();
         // Assert
-        Assert.That(actualProductName, 
-            Is.EqualTo(expectedProductName), 
-            "Product's name added to cart isn't equal to the name on the products' page.");
+        Assert.That(expectedProductNames, 
+            Is.EqualTo(actualProductNames), 
+            "Product's name(s) added to cart is/are not equal to the name(s) on the products' page.");
     }
 }

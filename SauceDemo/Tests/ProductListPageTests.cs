@@ -12,7 +12,7 @@ public class ProductListPageTests : BaseTest
     public void Setup() {}
 
     [Test]
-    public void ProductListPage_GoToCartTest()
+    public void ProductListPage_GoToCartPageTest()
     {
         // Arrange
         _loginPage.OpenLoginPage();
@@ -25,19 +25,43 @@ public class ProductListPageTests : BaseTest
     }
     
     [Test]
-    public void ProductListPage_QuantityOfProductsTest()
+    public void ProductListPage_QuantityOfProductsOnShoppingCartBadgeTest()
     {
         // Arrange
         _loginPage.OpenLoginPage();
         _loginPage.LoginWithStandardUser();
         // Act
-        for (int i = 1; i <= 2; i++)
+        var productsToAdd = new List<string>
         {
-            _productListPage.ChooseDefiniteProduct(i);
-            _productListPage.AddProductToCart();
+            "Sauce Labs Bolt T-Shirt",
+            "Sauce Labs Bike Light"
+        };
+        foreach (var product in productsToAdd)
+        {
+            _productListPage.ChooseDefiniteProductByName(product);
+            _productListPage.ClickAddToCartButton(product);
         }
+        
         // Assert
-        Assert.That(_productListPage.GetProductsQuantity(), 
-            Is.EqualTo(2), "Quantity of products should be 2");
+        Assert.That(_productListPage.GetProductsQuantityOnShoppingCartBadge(), 
+            Is.EqualTo(productsToAdd.Count), "Quantity of products should be equal to the number added");
+    }
+    
+    // classwork
+    [Test]
+    public void ProductListPage_CheckItemTest()
+    {
+        // Arrange
+        _loginPage.OpenLoginPage();
+        _loginPage.LoginWithStandardUser();
+
+        Assert.Multiple(() =>
+        {
+            // для проверки работы теста Assert.IsTrue(!_productListPage.IsItemPresentOnPage("Sauce Labs Bike Light"), "2");
+            Assert.IsTrue(_productListPage.IsItemPresentOnPage("Sauce Labs Backpack"), "1");
+            Assert.IsTrue(_productListPage.IsItemPresentOnPage("Sauce Labs Bike Light"), "2");
+            Assert.IsTrue(_productListPage.IsItemPresentOnPage("Sauce Labs Bolt T-Shirt"), "3");
+            Assert.IsTrue(_productListPage.IsItemPresentOnPage("Sauce Labs Fleece Jacket"), "4");
+        });
     }
 }

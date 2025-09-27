@@ -23,12 +23,15 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
-    public void Login_ValidDataValueInUpperCaseTest()
+    [TestCase("STANDARD_USER", "SECRET_SAUCE")]
+    [TestCase("~!@#$%^&*()_+={}[]|<>?//", "~!@#$%^&*()_+={}[]|<>?//")]
+    [TestCase(" ", " ")]
+    public void Login_InvalidDataValueTest(string username, string password)
     {
         // Arrange
         _loginPage.OpenLoginPage();
         // Act
-        _loginPage.SetUserName("STANDARD_USER").SetPassword("SECRET_SAUCE").ClickLogin();
+        _loginPage.SetUserName(username).SetPassword(password).ClickLoginButton();
         // Assert
         Assert.That(_loginPage.GetErrorMessage(), 
             Is.EqualTo
@@ -37,26 +40,12 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
-    public void Login_InvalidDataValueTest()
+    public void Login_EmptyUsernameWithValidPasswordTest()
     {
         // Arrange
         _loginPage.OpenLoginPage();
         // Act
-        _loginPage.Login("blfbla123@#$%^&()", "qwerty12<>*&^%$#@!_+");
-        // Assert
-        Assert.That(_loginPage.GetErrorMessage(), 
-            Is.EqualTo
-                ("Epic sadface: Username and password do not match any user in this service"), 
-            "Error message doesn't match the expected one.");
-    }
-    
-    [Test]
-    public void Login_EmptyUsernameTest()
-    {
-        // Arrange
-        _loginPage.OpenLoginPage();
-        // Act
-        _loginPage.SetUserName("").SetPassword(_loginPage.DefaultPassword).ClickLogin();
+        _loginPage.SetUserName("").SetPassword(_loginPage.DefaultPassword).ClickLoginButton();
         // Assert
         Assert.That(_loginPage.GetErrorMessage(), 
             Is.EqualTo
@@ -65,30 +54,16 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
-    public void Login_EmptyPasswordTest()
+    public void Login_EmptyPasswordWithValidUserNameTest()
     {
         // Arrange
         _loginPage.OpenLoginPage();
         // Act
-        _loginPage.SetUserName(_loginPage.StandardUsername).SetPassword("").ClickLogin();
+        _loginPage.SetUserName(_loginPage.StandardUsername).SetPassword("").ClickLoginButton();
         // Assert
         Assert.That(_loginPage.GetErrorMessage(), 
             Is.EqualTo
                 ("Epic sadface: Password is required"), 
-            "Error message doesn't match the expected one.");
-    }
-    
-    [Test]
-    public void Login_WhiteSpaceValueTest()
-    {
-        // Arrange
-        _loginPage.OpenLoginPage();
-        // Act
-        _loginPage.SetUserName(" ").SetPassword(" ").ClickLogin();
-        // Assert
-        Assert.That(_loginPage.GetErrorMessage(), 
-            Is.EqualTo
-                ("Epic sadface: Username and password do not match any user in this service"), 
             "Error message doesn't match the expected one.");
     }
     
@@ -98,7 +73,7 @@ public class LoginPageTests : BaseTest
         // Arrange
         _loginPage.OpenLoginPage();
         // Act
-        _loginPage.SetUserName(_loginPage.LockedOutUsername).SetPassword(_loginPage.DefaultPassword).ClickLogin();
+        _loginPage.SetUserName(_loginPage.LockedOutUsername).SetPassword(_loginPage.DefaultPassword).ClickLoginButton();
         // Assert
         Assert.That(_loginPage.GetErrorMessage(), 
             Is.EqualTo
