@@ -1,11 +1,18 @@
+using SauceDemo.Pages;
 using SauceDemo.Services;
 
 namespace SauceDemo.Tests;
 
-public class BaseTest
+public class BaseTest : BasePage
 {
-    [OneTimeTearDown]
-    public void OneTimeTeardown() 
+    [SetUp]
+    public void Setup()
+    {
+        OpenLoginPage();
+    }
+    
+    [TearDown]
+    public void TearDown() 
     {
         DriverManager.CloseBrowser();
     }

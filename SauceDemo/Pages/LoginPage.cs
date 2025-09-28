@@ -4,7 +4,6 @@ namespace SauceDemo.Pages;
 
 public class LoginPage : BasePage
 {
-    private readonly string _baseUrl = "https://www.saucedemo.com";
     private readonly By _userNameField = By.Id("user-name");
     private readonly By _passwordField = By.Id("password");
     private readonly By _loginButtonField = By.Id("login-button");
@@ -12,11 +11,6 @@ public class LoginPage : BasePage
     public readonly string StandardUsername = "standard_user";
     public readonly string LockedOutUsername = "locked_out_user";
     public readonly string DefaultPassword = "secret_sauce";
-    
-    public void OpenLoginPage()
-    {
-        Driver.Navigate().GoToUrl(_baseUrl);
-    }
 
     public LoginPage SetUserName(string userName)
     {

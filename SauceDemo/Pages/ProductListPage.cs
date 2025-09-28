@@ -9,7 +9,7 @@ public class ProductListPage : BasePage
     private readonly By _cartLink = By.XPath("//a[contains(@class,'shopping_cart_link')]");
     private readonly By _cartBadge = By.XPath("//span[@class='shopping_cart_badge']");
     private readonly string _itemLocator = "//div[text()='{0}']";
-    private readonly string _addToCartButtonOfProduct = "//button[contains(@id, 'add-to-cart-{0}')]";
+    private readonly string _addToCartButtonOfProduct = "//div[text()='{0}']//following::button[text() ='Add to cart']";
     
     public bool IsProductLabelPresentOnPage()
     {
@@ -23,32 +23,9 @@ public class ProductListPage : BasePage
         return state;
     }
 
-    public void ChooseDefiniteProductByName(string itemName)
-    {
-        Driver.FindElement(By.XPath(Format(_itemLocator, itemName)));
-    }
-
-    // "Sauce Labs Bolt T-Shirt" -> "sauce-labs-bolt-t-shirt"
-    private string GenerateSlug(string itemName)
-    {
-        return itemName.ToLower()
-            .Replace(" ", "-")
-            .Replace(".", "")
-            .Replace("()", "")
-            .Replace("(", "-")
-            .Replace(")", "");
-    }
-    private IWebElement FindAddToCartButtonOfProduct(string itemName)
-    {
-        string slug = GenerateSlug(itemName);
-        string elementButton = Format(_addToCartButtonOfProduct, slug);
-        var element = Driver.FindElement(By.XPath(elementButton));
-        return element;
-    }
-
     public void ClickAddToCartButton(string itemName)
     {
-        var button = FindAddToCartButtonOfProduct(itemName);
+        var button = Driver.FindElement(By.XPath(Format(_addToCartButtonOfProduct, itemName)));
         button.Click();
     }
 

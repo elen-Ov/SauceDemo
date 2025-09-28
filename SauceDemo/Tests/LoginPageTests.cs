@@ -7,14 +7,9 @@ public class LoginPageTests : BaseTest
     private readonly LoginPage _loginPage = new LoginPage();
     private readonly ProductListPage _productListPage = new ProductListPage();
 
-    [SetUp]
-    public void Setup() {}
-
     [Test]
     public void Login_ValidDataValueTest()
     {
-        // Arrange
-        _loginPage.OpenLoginPage();
         // Act
         _loginPage.LoginWithStandardUser();
         // Assert
@@ -28,8 +23,6 @@ public class LoginPageTests : BaseTest
     [TestCase(" ", " ")]
     public void Login_InvalidDataValueTest(string username, string password)
     {
-        // Arrange
-        _loginPage.OpenLoginPage();
         // Act
         _loginPage.SetUserName(username).SetPassword(password).ClickLoginButton();
         // Assert
@@ -42,8 +35,6 @@ public class LoginPageTests : BaseTest
     [Test]
     public void Login_EmptyUsernameWithValidPasswordTest()
     {
-        // Arrange
-        _loginPage.OpenLoginPage();
         // Act
         _loginPage.SetUserName("").SetPassword(_loginPage.DefaultPassword).ClickLoginButton();
         // Assert
@@ -56,8 +47,6 @@ public class LoginPageTests : BaseTest
     [Test]
     public void Login_EmptyPasswordWithValidUserNameTest()
     {
-        // Arrange
-        _loginPage.OpenLoginPage();
         // Act
         _loginPage.SetUserName(_loginPage.StandardUsername).SetPassword("").ClickLoginButton();
         // Assert
@@ -70,8 +59,6 @@ public class LoginPageTests : BaseTest
     [Test]
     public void Login_LockedOutUserTest()
     {
-        // Arrange
-        _loginPage.OpenLoginPage();
         // Act
         _loginPage.SetUserName(_loginPage.LockedOutUsername).SetPassword(_loginPage.DefaultPassword).ClickLoginButton();
         // Assert

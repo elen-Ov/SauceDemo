@@ -8,14 +8,10 @@ public class ProductListPageTests : BaseTest
     private readonly ProductListPage _productListPage = new ProductListPage();
     private readonly CartPage _cartPage = new CartPage();
     
-    [SetUp]
-    public void Setup() {}
-
     [Test]
     public void ProductListPage_GoToCartPageTest()
     {
         // Arrange
-        _loginPage.OpenLoginPage();
         _loginPage.LoginWithStandardUser();
         // Act
         _productListPage.GoToCart();
@@ -28,7 +24,6 @@ public class ProductListPageTests : BaseTest
     public void ProductListPage_QuantityOfProductsOnShoppingCartBadgeTest()
     {
         // Arrange
-        _loginPage.OpenLoginPage();
         _loginPage.LoginWithStandardUser();
         // Act
         var productsToAdd = new List<string>
@@ -38,7 +33,6 @@ public class ProductListPageTests : BaseTest
         };
         foreach (var product in productsToAdd)
         {
-            _productListPage.ChooseDefiniteProductByName(product);
             _productListPage.ClickAddToCartButton(product);
         }
         
@@ -52,7 +46,6 @@ public class ProductListPageTests : BaseTest
     public void ProductListPage_CheckItemTest()
     {
         // Arrange
-        _loginPage.OpenLoginPage();
         _loginPage.LoginWithStandardUser();
 
         Assert.Multiple(() =>
