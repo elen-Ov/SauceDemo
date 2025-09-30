@@ -16,6 +16,5 @@ public class BasePage
     protected void OpenLoginPage()
     {
         Driver.Navigate().GoToUrl(_baseUrl);
-        Driver.Manage().Window.Maximize();
     }
 }
