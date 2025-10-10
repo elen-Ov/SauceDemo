@@ -29,19 +29,19 @@ pipeline {
 	
 	stage('Restore') {
 	  steps {
-	    bat 'dotnet restore'
+	    sh 'dotnet restore'
 	  }
     }
 
     stage('Build') {
       steps {
-        bat 'dotnet build --configuration Release'
+        sh 'dotnet build --configuration Release'
       }
     }
 
     stage('Test') {
       steps {
-        bat "dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
+        sh "dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
       }
     }	
 
@@ -49,7 +49,7 @@ pipeline {
   
   post {
     always {
-	  bat 'allure generate TestResults --clean -o allure-report'
+	  sh 'allure generate TestResults --clean -o allure-report'
 	  script {
 	    allure([
       includeProperties: false,
