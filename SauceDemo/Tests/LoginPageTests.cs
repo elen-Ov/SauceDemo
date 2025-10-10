@@ -1,20 +1,30 @@
 using SauceDemo.Pages;
+using Allure.NUnit.Attributes;
+using MyAllure = Allure.NUnit;
+using Allure.Net.Commons;
 
 namespace SauceDemo.Tests;
 
+[MyAllure.AllureNUnit]
 public class LoginPageTests : BaseTest
 {
     private readonly LoginPage _loginPage = new LoginPage();
     private readonly ProductListPage _productListPage = new ProductListPage();
 
     [Test]
+    [Category("Login")]
+    [Category("QA")]
+    [AllureTag("smoke")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Login")]
     public void Login_ValidDataValueTest()
     {
         // Act
         _loginPage.LoginWithStandardUser();
         // Assert
-        Assert.That(_productListPage.IsProductLabelPresentOnPage(), 
-            Is.True, "Products label is not present on page");
+        Assert.That(_productListPage.IsProductLabelPresentOnPage(),
+                Is.True, "Products label is not present on page");
     }
     
     [Test]

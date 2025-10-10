@@ -1,5 +1,5 @@
 using OpenQA.Selenium;
-using SauceDemo.Services;
+using SauceDemo.Utils;
 
 namespace SauceDemo.Pages;
 
