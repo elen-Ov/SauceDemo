@@ -64,7 +64,7 @@ pipeline {
           script {
             allure([
               includeProperties: false,
-              jdk: '/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home',
+              jdk: '',
               results: [[path: 'SauceDemo/TestResults']],
               reportBuildPolicy: 'ALWAYS'
             ])
