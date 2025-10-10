@@ -1,6 +1,14 @@
 pipeline {
   agent any
   
+  stage('Check PATH') {
+      steps {
+          sh 'echo "PATH: $PATH"'
+          sh 'which dotnet || echo "dotnet not found"'
+          sh 'which allure || echo "allure not found"'
+      }
+  }
+  
   parameters {
 	string(
 	  name:'TEST_TAG',
