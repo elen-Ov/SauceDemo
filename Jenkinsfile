@@ -46,7 +46,7 @@ pipeline {
     
     stage('Test') {
       steps {
-          sh "export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
+          sh "export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\" --logger:\"nunit;LogFileName=test-result.xml\""
         }
     }
   }
@@ -54,17 +54,22 @@ pipeline {
   post {
     always {
       sh 'echo "Post started"'
+          sh 'echo "JAVA_HOME: $JAVA_HOME"'
+          sh 'which java'
+          sh '/usr/libexec/java_home -V'
+          sh 'ls -la /Library/Java/JavaVirtualMachines/'
           sh 'ls -la TestResults || echo "TestResults not found"'
           sh 'find . -name "*.trx" | head -10'
+          sh 'find . -name "*.xml" | head -10'
           script {
             allure([
               includeProperties: false,
-              jdk: '',
-              results: [[path: 'TestResults']],
+              jdk: '/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home',
+              results: [[path: 'SauceDemo/TestResults']],
               reportBuildPolicy: 'ALWAYS'
             ])
       }
-      archiveArtifacts artifacts: '**/*.trx', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'SauceDemo/TestResults/*.trx', allowEmptyArchive: true
       sh 'echo "Post finished"'
     }
     failure {
