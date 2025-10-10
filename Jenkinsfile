@@ -56,12 +56,14 @@ pipeline {
       sh 'echo "JAVA_HOME: $JAVA_HOME"'
       sh 'java -version || echo "Java not found"'
           script {
+          timeout(time: 5, unit: 'MINUTES') { 
             allure([
               includeProperties: false,
               jdk: '',
               results: [[path: 'SauceDemo/TestResults']],
               reportBuildPolicy: 'ALWAYS'
             ])
+          }
       }
       archiveArtifacts artifacts: 'SauceDemo/TestResults/*.trx', allowEmptyArchive: true
       sh 'echo "Post finished"'
