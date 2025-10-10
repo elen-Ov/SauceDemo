@@ -53,14 +53,8 @@ pipeline {
   
   post {
     always {
-      sh 'echo "Post started"'
-          sh 'echo "JAVA_HOME: $JAVA_HOME"'
-          sh 'which java'
-          sh '/usr/libexec/java_home -V'
-          sh 'ls -la /Library/Java/JavaVirtualMachines/'
-          sh 'ls -la TestResults || echo "TestResults not found"'
-          sh 'find . -name "*.trx" | head -10'
-          sh 'find . -name "*.xml" | head -10'
+      sh 'echo "JAVA_HOME: $JAVA_HOME"'
+      sh 'java -version || echo "Java not found"'
           script {
             allure([
               includeProperties: false,
