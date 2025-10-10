@@ -53,15 +53,19 @@ pipeline {
   
   post {
     always {
-      script {
-        allure([
-          includeProperties: false,
-          jdk: '',
-          results: [[path: 'TestResults']],
-          reportBuildPolicy: 'ALWAYS'
-        ])
+      sh 'echo "Post started"'
+          sh 'ls -la TestResults || echo "TestResults not found"'
+          sh 'find . -name "*.trx" | head -10'
+          script {
+            allure([
+              includeProperties: false,
+              jdk: '',
+              results: [[path: 'TestResults']],
+              reportBuildPolicy: 'ALWAYS'
+            ])
       }
       archiveArtifacts artifacts: '**/*.trx', allowEmptyArchive: true
+      sh 'echo "Post finished"'
     }
     failure {
       echo 'Test run is failed!'
