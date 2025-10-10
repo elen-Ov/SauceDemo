@@ -46,8 +46,8 @@ pipeline {
     
     stage('Test') {
       steps {
-        sh "export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet test --filter \"Category=\${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
-      }
+          sh "dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
+        }
     }
   }
   
