@@ -1,4 +1,5 @@
 using OpenQA.Selenium;
+using Allure.NUnit.Attributes;
 
 namespace SauceDemo.Pages;
 
@@ -12,23 +13,37 @@ public class LoginPage : BasePage
     public readonly string LockedOutUsername = "locked_out_user";
     public readonly string DefaultPassword = "secret_sauce";
 
+    [AllureStep("Ввод имени пользователя: {userName}")]
     public LoginPage SetUserName(string userName)
     {
-        Driver.FindElement(_userNameField).SendKeys(userName);
-        return this;
+        // делегат Action (лямбда-выражение () => { ... })  
+        // лямбда не выполняется сразу — она передаётся как параметр и вызывается внутри метода  PerformLoggedAction()
+        return PerformLoggedAction($"Ввод имени пользователя: {userName}", () =>
+            {
+                Driver.FindElement(_userNameField).SendKeys(userName);
+                return this;
+            });
     }
 
+    [AllureStep("Ввод пароля: {password}")]
     public LoginPage SetPassword(string password)
     {
-        Driver.FindElement(_passwordField).SendKeys(password);
-        return this;
+        return PerformLoggedAction($"Ввод пароля: {password}", () =>
+            {
+                Driver.FindElement(_passwordField).SendKeys(password);
+                return this;
+            });
     }
     
+    [AllureStep("Клик по кнопке логина")]
     public ProductListPage ClickLoginButton()
     {
-        var loginButton = Driver.FindElement(_loginButtonField);;
-        loginButton.Click();
-        return new ProductListPage();
+        return PerformLoggedAction($"Клик по кнопке логина", () =>
+        {
+            var loginButton = Driver.FindElement(_loginButtonField);
+            loginButton.Click();
+            return new ProductListPage();
+        });
     }
 
     public string GetErrorMessage()
@@ -36,15 +51,25 @@ public class LoginPage : BasePage
         return Driver.FindElement(_errorMessageBy).Text;
     }
 
+    [AllureStep("Логин под стандартным пользователем")]
     public ProductListPage LoginWithStandardUser()
     {
-        return Login(StandardUsername, DefaultPassword);
+        return PerformLoggedAction($"Логин под стандартным пользователем", () =>
+            {
+                Login(StandardUsername, DefaultPassword);
+                return new ProductListPage();
+            });
     }
     
+    [AllureStep("Логин с именем и паролем: {username}, {password}")]
     private ProductListPage Login(string username, string password)
     {
-        SetUserName(username);
-        SetPassword(password);
-        return ClickLoginButton();
+        return PerformLoggedAction($"Логин с именем и паролем: {username}, {password}", () =>
+        {
+            SetUserName(username);
+            SetPassword(password);
+            ClickLoginButton();
+            return new ProductListPage();
+        });
     }
 }
