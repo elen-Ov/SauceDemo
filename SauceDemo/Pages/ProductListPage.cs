@@ -1,5 +1,7 @@
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using static System.String;
+using Allure.NUnit.Attributes;
 
 namespace SauceDemo.Pages;
 
@@ -11,35 +13,71 @@ public class ProductListPage : BasePage
     private readonly string _itemLocator = "//div[text()='{0}']";
     private readonly string _addToCartButtonOfProduct = "//div[text()='{0}']//following::button[text() ='Add to cart']";
     
+    [AllureStep("Переход на страницу с товарами / витрину")]
     public bool IsProductLabelPresentOnPage()
     {
-        bool state = Driver.FindElement(_productLabel).Displayed;
-        return state;
+        return PerformLoggedAction("Переход на страницу с товарами / витрину", () =>
+        {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            try
+            {
+                var element = wait.Until(driver => driver.FindElement(_productLabel));
+                return element.Displayed;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        });
     }
 
+    [AllureStep("Проверка наличия товара на витрине")]
     public bool IsItemPresentOnPage(string itemName)
     {
-        bool state = Driver.FindElement(By.XPath(Format(_itemLocator, itemName))).Displayed;
-        return state;
+        return PerformLoggedAction($"Проверка наличия товара '{itemName}' на витрине", () =>
+        {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            try
+            {
+                var element = wait.Until(driver => driver.FindElement(By.XPath(Format(_itemLocator, itemName))));
+                return element.Displayed; 
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        });
     }
 
+    [AllureStep("Клик по кнопке 'добавить товар'")]
     public void ClickAddToCartButton(string itemName)
     {
-        var button = Driver.FindElement(By.XPath(Format(_addToCartButtonOfProduct, itemName)));
-        button.Click();
+        PerformLoggedAction($"Клик по кнопке 'добавить товар'", () =>
+        {
+            var button = Driver.FindElement(By.XPath(Format(_addToCartButtonOfProduct, itemName)));
+            button.Click();
+        });
     }
 
+    [AllureStep("Количество товаров в корзине на значке корзины")]
     public int GetProductsQuantityOnShoppingCartBadge()
     {
-        var cartBadge = Driver.FindElement(_cartBadge);
-        var quantity = cartBadge.Text;
-        int productsQuantity = Convert.ToInt32(quantity);
-        return productsQuantity;
+        return PerformLoggedAction($"Количество товаров в корзине на значке корзины", () =>
+        {
+            var cartBadge = Driver.FindElement(_cartBadge);
+            var quantity = cartBadge.Text;
+            int productsQuantity = Convert.ToInt32(quantity);
+            return productsQuantity;
+        });
     }
     
+    [AllureStep("Переход в корзину")]
     public void GoToCart()
     {
-        var cartLink = Driver.FindElement(_cartLink);
-        cartLink.Click();
+        PerformLoggedAction($"", () =>
+        {
+            var cartLink = Driver.FindElement(_cartLink);
+            cartLink.Click();
+        });
     }
 }

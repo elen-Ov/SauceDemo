@@ -2,6 +2,7 @@ using SauceDemo.Pages;
 using Allure.NUnit.Attributes;
 using MyAllure = Allure.NUnit;
 using Allure.Net.Commons;
+using SauceDemo.Utils;
 
 namespace SauceDemo.Tests;
 
@@ -12,7 +13,7 @@ public class LoginPageTests : BaseTest
     private readonly ProductListPage _productListPage = new ProductListPage();
 
     [Test]
-    [Category("Login")]
+    [Category("Login tests")]
     [Category("QA")]
     [AllureTag("smoke")]
     [AllureSeverity(SeverityLevel.critical)]
@@ -28,6 +29,30 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
+    [Category("Login")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Login with accepted data")]
+    [TestCaseSource(typeof(TestDataSource), nameof(TestDataSource.GetTestCasesForLogin))]
+    public void Login_LoginUnderAcceptedUsernamesAndPasswordTest(string username, string password, bool isLoggedIn)
+    {
+        // Act
+        _loginPage.SetUserName(username).SetPassword(password).ClickLoginButton();
+        // Assert
+        bool actualResult = _productListPage.IsProductLabelPresentOnPage();
+        bool expectedResult = isLoggedIn;
+        Assert.That(actualResult, Is.EqualTo(expectedResult), "Actual result isn't equal to expected result");
+    }
+    
+    [Test]
+    [Category("Login")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureSeverity(SeverityLevel.trivial)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Login with invalid data")]
     [TestCase("STANDARD_USER", "SECRET_SAUCE")]
     [TestCase("~!@#$%^&*()_+={}[]|<>?//", "~!@#$%^&*()_+={}[]|<>?//")]
     [TestCase(" ", " ")]
@@ -43,6 +68,12 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
+    [Category("Login")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureSeverity(SeverityLevel.trivial)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Login with empty data")]
     public void Login_EmptyUsernameWithValidPasswordTest()
     {
         // Act
@@ -55,6 +86,12 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
+    [Category("Login")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureSeverity(SeverityLevel.trivial)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Login with empty data")]
     public void Login_EmptyPasswordWithValidUserNameTest()
     {
         // Act
@@ -67,6 +104,12 @@ public class LoginPageTests : BaseTest
     }
     
     [Test]
+    [Category("Login")]
+    [Category("QA")]
+    [AllureTag("regression")]
+    [AllureSeverity(SeverityLevel.trivial)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Login with locked user data")]
     public void Login_LockedOutUserTest()
     {
         // Act
