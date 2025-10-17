@@ -46,8 +46,8 @@ pipeline {
     
     stage('Test') {
       steps {
-          sh "export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
-        }
+        sh "export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet test --filter \"Category=${params.TEST_TAG}\" --logger:\"trx;LogFileName=test-result.trx\""
+      }
     }
   }
   
@@ -55,14 +55,13 @@ pipeline {
     always {
       sh 'allure generate TestResults --clean -o allure-report'
       sh 'java -version || echo "Java not found"'
-          script {
-          	    allure([
-                includeProperties: false,
-                jdk: '',
-                results: [[path: 'TestResults']],
-                reportBuildPolicy: 'ALWAYS'
-              ])
-          	}
+      script {
+        allure([
+          includeProperties: false,
+          jdk: '',
+          results: [[path: 'TestResults']],
+          reportBuildPolicy: 'ALWAYS'
+        ])
       }
       archiveArtifacts artifacts: 'SauceDemo/TestResults/*.trx', allowEmptyArchive: true
       sh 'echo "Post finished"'
