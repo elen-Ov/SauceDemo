@@ -53,8 +53,7 @@ pipeline {
   
   post {
     always {
-      sh 'allure generate TestResults --clean -o allure-report'
-      sh 'java -version || echo "Java not found"'
+      sh 'export PATH=$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && allure generate TestResults --clean -o allure-report'
       script {
         allure([
           includeProperties: false,
