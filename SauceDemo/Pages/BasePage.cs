@@ -7,7 +7,7 @@ namespace SauceDemo.Pages;
 public class BasePage
 {
     private readonly string _baseUrl = "https://www.saucedemo.com";
-    private static readonly ILog Log = LogManager.GetLogger(typeof(LoginPage));
+    private static readonly ILog Log = LogManager.GetLogger(typeof(BasePage));
     
     // свойство, можно так - protected IWebDriver Driver => DriverManager.Driver;
     protected IWebDriver Driver

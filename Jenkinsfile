@@ -53,17 +53,16 @@ pipeline {
   
   post {
     always {
-      sh 'echo "JAVA_HOME: $JAVA_HOME"'
+      sh 'allure generate TestResults --clean -o allure-report'
       sh 'java -version || echo "Java not found"'
           script {
-          timeout(time: 5, unit: 'MINUTES') { 
-            allure([
-              includeProperties: false,
-              jdk: '',
-              results: [[path: 'SauceDemo/TestResults']],
-              reportBuildPolicy: 'ALWAYS'
-            ])
-          }
+          	    allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'TestResults']],
+                reportBuildPolicy: 'ALWAYS'
+              ])
+          	}
       }
       archiveArtifacts artifacts: 'SauceDemo/TestResults/*.trx', allowEmptyArchive: true
       sh 'echo "Post finished"'
