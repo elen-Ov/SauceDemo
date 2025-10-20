@@ -40,11 +40,11 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh '''
-                export PATH=$PATH:/usr/local/share/dotnet:/opt/homebrew/bin
+                sh """
+                export PATH=\$PATH:/usr/local/share/dotnet:/opt/homebrew/bin
                 mkdir -p TestResults
                 dotnet test --filter "Category=${params.TEST_TAG}" --logger "trx;LogFileName=TestResults/test-results.trx"
-                '''
+                """
             }
         }
     }
