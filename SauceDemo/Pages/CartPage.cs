@@ -1,6 +1,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Allure.NUnit.Attributes;
+using SauceDemo.Utils;
 
 namespace SauceDemo.Pages;
 
@@ -14,39 +15,12 @@ public class CartPage : BasePage
     [AllureStep("Переход на страницу корзины")]
     public bool IsShoppingCartLabelPresentOnPage()
     {
-        return PerformLoggedAction($"Переход на страницу корзины", () =>
+        return LoggerUtil.LogStep<bool>("Проверка отображения лейбла корзины", () =>
         {
-            bool state = Driver.FindElement(_shoppingCartLabel).Displayed;
-            return state;
-        });
-    }
-
-    [AllureStep("Получение списка товаров в корзине")]
-    public List<string> GetAllProductNamesInCart()
-    {
-        return PerformLoggedAction($"Получение списка товаров в корзине", () =>
-        {
-            var productElements = Driver.FindElements(_productInCartName);
-            return productElements.Select(e => e.Text).ToList();
-        });
-    }
-
-    [AllureStep("Проверка наличия товара в корзине")]
-    public bool IsProductPresentInCart(string productName)
-    {
-        return PerformLoggedAction($"Проверка наличия товара в корзине", () =>
-        {
-            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             try
             {
-                var element = wait.Until(driver => driver.FindElement(_productInCartName));
-                var itemName = element.Text;
-                if (itemName == productName)
-                {
-                    return true;
-                }
-
-                return false;
+                var element = WaitForElementAndReturn(_shoppingCartLabel);  
+                return element.Displayed;
             }
             catch (WebDriverTimeoutException)
             {
@@ -55,32 +29,82 @@ public class CartPage : BasePage
         });
     }
 
+    [AllureStep("Получение списка товаров в корзине")]
+    public List<string> GetAllProductNamesInCart()
+    {
+        return LoggerUtil.LogStep<List<string>>("Получение списка товаров в корзине", () =>
+        {
+            try
+            {
+                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+                var productElements = wait.Until(driver => driver.FindElements(_productInCartName));
+                return productElements.Select(e => e.Text).ToList();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return new List<string>();  // если элементы не найдены, возвращаем пустой список
+            }
+        });
+    }
+
+    [AllureStep("Проверка наличия товара в корзине")]
+    public bool IsProductPresentInCart(string productName)
+    {
+        return LoggerUtil.LogStep<bool>($"Проверка наличия товара '{productName}' в корзине", () =>
+        {
+            try
+            {
+                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));  
+                var productElements = wait.Until(driver => driver.FindElements(_productInCartName));
+                return productElements.Any(e => e.Text == productName);  
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;  
+            }
+        });
+    }
+
     [AllureStep("Получение названия товара в корзине")]
     public string GetProductInCartName()
     {
-        return PerformLoggedAction($"Получение названия товара в корзине", () =>
+        return LoggerUtil.LogStep<string>("Получение названия товара в корзине", () =>
         {
-            var itemName = Driver.FindElement(_productInCartName).Text;
-            return itemName;
+            try
+            {
+                var element = WaitForElementAndReturn(_productInCartName);  
+                return element.Text;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return string.Empty;  // элемент не найден, возвращаем пустую строку
+            }
         });
     }
 
     [AllureStep("Получение цены товара в корзине")]
     public string GetProductInCartPrice()
     {
-        return PerformLoggedAction($"", () =>
+        return LoggerUtil.LogStep<string>("Получение цены товара в корзине", () =>
         {
-            var itemPrice = Driver.FindElement(_productInCartPrice).Text;
-            return itemPrice;
+            try
+            {
+                var element = WaitForElementAndReturn(_productInCartPrice);  
+                return element.Text;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return string.Empty;  
+            }
         });
     }
 
     [AllureStep("Клик по кнопке удаления товара из корзины")]
     public void ClickRemoveItemButton()
     {
-        PerformLoggedAction($"Клик по кнопке удаления товара из корзины", () =>
+        LoggerUtil.LogStep("Клик по кнопке удаления товара из корзины", () =>
         {
-            var removeButton = Driver.FindElement(_removeItemButton);
+            var removeButton = WaitForElementAndReturn(_removeItemButton);
             removeButton.Click();
         });
     }

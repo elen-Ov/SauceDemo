@@ -1,5 +1,5 @@
-using log4net;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using SauceDemo.Utils;
 
 namespace SauceDemo.Pages;
@@ -7,13 +7,9 @@ namespace SauceDemo.Pages;
 public class BasePage
 {
     private readonly string _baseUrl = "https://www.saucedemo.com";
-    private static readonly ILog Log = LogManager.GetLogger(typeof(BasePage));
     
-    // свойство, можно так - protected IWebDriver Driver => DriverManager.Driver;
-    protected IWebDriver Driver
-    {
-        get { return DriverManager.Driver; }
-    }
+    // свойство
+    protected IWebDriver Driver => DriverManager.Driver;
     
     // открытие сайта
     protected void OpenLoginPage()
@@ -21,33 +17,24 @@ public class BasePage
         Driver.Navigate().GoToUrl(_baseUrl);
     }
     
-    // логирование
-    protected void PerformLoggedAction(string logMessage, Action action)
+    // ожидание с возвратом + логирование
+    protected IWebElement WaitForElementAndReturn(By locator, int timeoutSeconds = 10)
     {
-        Log.Info(logMessage); // логируем сообщение
-        try
+        return LoggerUtil.LogStep($"Ожидание элемента {locator}", () =>
         {
-            action(); // выполняем лямбду — находим элемент и вводим текст
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"Ошибка: {logMessage}", ex); // логируем ошибку
-            throw;
-        }
-    }
-    
-    // для методов с возвращаемым значением 
-    protected T PerformLoggedAction<T>(string logMessage, Func<T> action)
-    {
-        Log.Info(logMessage);
-        try
-        {
-            return action();
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"Ошибка: {logMessage}", ex);
-            throw;
-        }
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(timeoutSeconds));
+            return wait.Until(d =>
+            {
+                var element = d.FindElement(locator);
+                if (element.Displayed)
+                {
+                    return element;
+                }
+                else
+                {
+                    return null;
+                }
+            });
+        });
     }
 }

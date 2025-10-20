@@ -1,5 +1,6 @@
 using OpenQA.Selenium;
 using Allure.NUnit.Attributes;
+using SauceDemo.Utils;
 
 namespace SauceDemo.Pages;
 
@@ -16,31 +17,31 @@ public class LoginPage : BasePage
     [AllureStep("Ввод имени пользователя: {userName}")]
     public LoginPage SetUserName(string userName)
     {
-        // делегат Action (лямбда-выражение () => { ... })  
-        // лямбда не выполняется сразу — она передаётся как параметр и вызывается внутри метода  PerformLoggedAction()
-        return PerformLoggedAction($"Ввод имени пользователя: {userName}", () =>
-            {
-                Driver.FindElement(_userNameField).SendKeys(userName);
-                return this;
-            });
+        return LoggerUtil.LogStep($"Ввод имени пользователя: '{userName}'", () =>
+        {
+            var element = WaitForElementAndReturn(_userNameField);
+            element.SendKeys(userName);
+            return this;
+        });
     }
 
     [AllureStep("Ввод пароля: {password}")]
     public LoginPage SetPassword(string password)
     {
-        return PerformLoggedAction($"Ввод пароля: {password}", () =>
-            {
-                Driver.FindElement(_passwordField).SendKeys(password);
-                return this;
-            });
+        return LoggerUtil.LogStep($"Ввод пароля: '{password}'", () =>
+        {
+            var element = WaitForElementAndReturn(_passwordField);  
+            element.SendKeys(password);
+            return this;
+        });
     }
     
     [AllureStep("Клик по кнопке логина")]
     public ProductListPage ClickLoginButton()
     {
-        return PerformLoggedAction($"Клик по кнопке логина", () =>
+        return LoggerUtil.LogStep($"Клик по кнопке логина", () =>
         {
-            var loginButton = Driver.FindElement(_loginButtonField);
+            var loginButton = WaitForElementAndReturn(_loginButtonField);
             loginButton.Click();
             return new ProductListPage();
         });
@@ -48,28 +49,27 @@ public class LoginPage : BasePage
 
     public string GetErrorMessage()
     {
-        return Driver.FindElement(_errorMessageBy).Text;
+        var errorElement = WaitForElementAndReturn(_errorMessageBy);
+        return errorElement.Text;
     }
 
     [AllureStep("Логин под стандартным пользователем")]
     public ProductListPage LoginWithStandardUser()
     {
-        return PerformLoggedAction($"Логин под стандартным пользователем", () =>
-            {
-                Login(StandardUsername, DefaultPassword);
-                return new ProductListPage();
-            });
+        return LoggerUtil.LogStep($"Логин под стандартным пользователем", () =>
+        {
+            return Login(StandardUsername, DefaultPassword);
+        });
     }
     
     [AllureStep("Логин с именем и паролем: {username}, {password}")]
     private ProductListPage Login(string username, string password)
     {
-        return PerformLoggedAction($"Логин с именем и паролем: {username}, {password}", () =>
+        return LoggerUtil.LogStep($"Логин с именем и паролем: '{username}', '{password}'", () =>
         {
             SetUserName(username);
             SetPassword(password);
-            ClickLoginButton();
-            return new ProductListPage();
+            return ClickLoginButton();
         });
     }
 }
