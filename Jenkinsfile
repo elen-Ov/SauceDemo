@@ -2,11 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(
-            name: 'TEST_TAG',
-            defaultValue: 'QA',
-            description: 'Run tests with tag'
-        )
+        string(name: 'TEST_TAG', defaultValue: 'QA', description: 'Run tests with tag')
     }
 
     stages {
@@ -20,45 +16,35 @@ pipeline {
 
         stage('Clean') {
             steps {
-                cleanWs()  // cleanWs() вместо deleteDir()
+                cleanWs()
             }
         }
 
         stage('Checkout') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/release/Lesson22']],  // явное указание ветки
-                    extensions: [],
-                    userRemoteConfigs: [[url: 'https://github.com/elen-Ov/SauceDemo.git']]
-                ])
+                checkout scm
             }
         }
 
         stage('Restore') {
             steps {
-                withEnv(["PATH+EXTRA=${tool 'dotnet'}/bin:${env.PATH}"]) {
-                    sh 'dotnet restore'
-                }
+                sh 'export PATH=$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet restore'
             }
         }
 
         stage('Build') {
             steps {
-                withEnv(["PATH+EXTRA=${tool 'dotnet'}/bin:${env.PATH}"]) {
-                    sh 'dotnet build --configuration Release'
-                }
+                sh 'export PATH=$PATH:/usr/local/share/dotnet:/opt/homebrew/bin && dotnet build --configuration Release'
             }
         }
 
         stage('Test') {
             steps {
-                withEnv(["PATH+EXTRA=${tool 'dotnet'}/bin:${env.PATH}"]) {
-                    sh """
-                    mkdir -p TestResults || true
-                    dotnet test --filter "Category=${params.TEST_TAG}" --logger "trx;LogFileName=TestResults/test-results.trx"
-                    """
-                }
+                sh '''
+                export PATH=$PATH:/usr/local/share/dotnet:/opt/homebrew/bin
+                mkdir -p TestResults
+                dotnet test --filter "Category=${params.TEST_TAG}" --logger "trx;LogFileName=TestResults/test-results.trx"
+                '''
             }
         }
     }
@@ -66,9 +52,7 @@ pipeline {
     post {
         always {
             script {
-                // Проверка существования TestResults перед генерацией Allure
-                def testResultsExist = fileExists 'TestResults'
-                if (testResultsExist) {
+                if (fileExists('TestResults')) {
                     allure([
                         includeProperties: false,
                         jdk: '',
