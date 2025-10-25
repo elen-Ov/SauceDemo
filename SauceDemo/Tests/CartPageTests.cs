@@ -62,8 +62,8 @@ public class CartPageTests : BaseTest
             Is.EqualTo(1), "Product quantity isn't equal to 1.");
         // перейти в корзину и проверить
         _productListPage.GoToCart();
-        var itemInCartName = _cartPage.GetProductInCartName();
-        var itemInCartPrice = _cartPage.GetProductInCartPrice();
+        var itemInCartName = _cartPage.GetProductInCartName(productName);
+        var itemInCartPrice = _cartPage.GetProductInCartPrice(price);
         // soft asserts
         Assert.Multiple(() =>
         {

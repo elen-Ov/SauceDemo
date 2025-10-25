@@ -2,14 +2,16 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Allure.NUnit.Attributes;
 using SauceDemo.Utils;
+using static System.String;
 
 namespace SauceDemo.Pages;
 
 public class CartPage : BasePage
 {
     private readonly By _shoppingCartLabel = By.XPath("//span[text()='Your Cart']");
-    private readonly By _productInCartName = By.ClassName("inventory_item_name");
-    private readonly By _productInCartPrice = By.ClassName("inventory_item_price");
+    private readonly By _productInCartNames = By.ClassName("inventory_item_name");
+    private readonly string _productInCartName = "//div[@data-test='inventory-item-name' and text()='{0}']";
+    private readonly string _productInCartPrice = "//div[@class='inventory_item_price' and string()='{0}']";
     private readonly By _removeItemButton = By.XPath("//button[@class='btn btn_secondary btn_small cart_button']");
 
     [AllureStep("Переход на страницу корзины")]
@@ -37,7 +39,7 @@ public class CartPage : BasePage
             try
             {
                 var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
-                var productElements = wait.Until(driver => driver.FindElements(_productInCartName));
+                var productElements = wait.Until(driver => driver.FindElements(_productInCartNames));
                 return productElements.Select(e => e.Text).ToList();
             }
             catch (WebDriverTimeoutException)
@@ -54,8 +56,9 @@ public class CartPage : BasePage
         {
             try
             {
-                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));  
-                var productElements = wait.Until(driver => driver.FindElements(_productInCartName));
+                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+                var locator = By.XPath(Format(_productInCartName, productName));
+                var productElements = wait.Until(driver => driver.FindElements(locator));
                 return productElements.Any(e => e.Text == productName);  
             }
             catch (WebDriverTimeoutException)
@@ -66,13 +69,14 @@ public class CartPage : BasePage
     }
 
     [AllureStep("Получение названия товара в корзине")]
-    public string GetProductInCartName()
+    public string GetProductInCartName(string productName)
     {
         return LoggerUtil.LogStep<string>("Получение названия товара в корзине", () =>
         {
             try
             {
-                var element = WaitForElementAndReturn(_productInCartName);  
+                var locator = By.XPath(Format( _productInCartName, productName));
+                var element = WaitForElementAndReturn(locator);  
                 return element.Text;
             }
             catch (WebDriverTimeoutException)
@@ -83,13 +87,14 @@ public class CartPage : BasePage
     }
 
     [AllureStep("Получение цены товара в корзине")]
-    public string GetProductInCartPrice()
+    public string GetProductInCartPrice(string productPrice)
     {
         return LoggerUtil.LogStep<string>("Получение цены товара в корзине", () =>
         {
             try
             {
-                var element = WaitForElementAndReturn(_productInCartPrice);  
+                var locator = By.XPath(Format( _productInCartPrice, productPrice));
+                var element = WaitForElementAndReturn(locator);  
                 return element.Text;
             }
             catch (WebDriverTimeoutException)
