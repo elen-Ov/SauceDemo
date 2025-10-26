@@ -53,13 +53,12 @@ pipeline {
         always {
             script {
                 if (fileExists('TestResults')) {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        results: [[path: 'TestResults']],
-                        reportBuildPolicy: 'ALWAYS'
-                    ])
-                    archiveArtifacts artifacts: 'TestResults/*.trx', allowEmptyArchive: true
+                    sh """
+                    export PATH=$PATH:/opt/homebrew/bin
+                    mkdir -p allure-report
+                    allure generate TestResults --output allure-report --clean
+                    """
+                    archiveArtifacts artifacts: 'TestResults/*.trx, allure-report/**', allowEmptyArchive: true
                 } else {
                     echo "Warning: TestResults directory not found!"
                 }
