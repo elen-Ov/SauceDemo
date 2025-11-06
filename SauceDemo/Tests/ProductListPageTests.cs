@@ -1,7 +1,11 @@
 using SauceDemo.Pages;
+using Allure.NUnit.Attributes;
+using MyAllure = Allure.NUnit;
+using Allure.Net.Commons;
 
 namespace SauceDemo.Tests;
 
+[MyAllure.AllureNUnit]
 public class ProductListPageTests : BaseTest
 {
     private readonly LoginPage _loginPage = new LoginPage();
@@ -9,6 +13,12 @@ public class ProductListPageTests : BaseTest
     private readonly CartPage _cartPage = new CartPage();
     
     [Test]
+    [Category("Product list tests")]
+    [Category("QA")]
+    [AllureTag("smoke")]
+    [AllureSeverity(SeverityLevel.blocker)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Product list open cart page check")]
     public void ProductListPage_GoToCartPageTest()
     {
         // Arrange
@@ -21,6 +31,12 @@ public class ProductListPageTests : BaseTest
     }
     
     [Test]
+    [Category("Product list tests")]
+    [Category("QA")]
+    [AllureTag("smoke")]
+    [AllureSeverity(SeverityLevel.minor)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Product list quantity of goods check")]
     public void ProductListPage_QuantityOfProductsOnShoppingCartBadgeTest()
     {
         // Arrange
@@ -43,6 +59,12 @@ public class ProductListPageTests : BaseTest
     
     // classwork
     [Test]
+    [Category("Product list tests")]
+    [Category("QA")]
+    [AllureTag("smoke")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureOwner("Elena Ov")]
+    [AllureSuite("Products' presence on page check")]
     public void ProductListPage_CheckItemTest()
     {
         // Arrange

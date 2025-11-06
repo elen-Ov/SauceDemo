@@ -486,4 +486,12 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+# Allure reports
+allure-results/
+allure-report/
+
+# Другие временные файлы
+Logs/  # Если не хотите коммитить логи
+*.log  # Или конкретные расширения
+
 # End of https://www.toptal.com/developers/gitignore/api/rider,csharp
